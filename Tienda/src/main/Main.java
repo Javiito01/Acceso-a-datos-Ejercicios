@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 // complejidad de 0(1)
 enum Categoria {
-	PORTATIL, GAMING, AURICULARES, RATONES, TECLADOS
+	PORTATILES, GAMING, AURICULARES, RATONES, TECLADOS
 }
 
 // complejidad de 0(1)
@@ -48,8 +48,31 @@ public double valortotalStock() {
 
 public String toString() {
 	if (stock == 0) {
-		
+		return nombre + "[Codigo:" + codigoProducto + ", Categoría: " + categoria + " ] No quedan unidades";
 	}
+	return nombre + "[Codigo: " + codigoProducto + ", Categoria: " + categoria + ", Stock:" + stock + ",Valor total de stock: " + valortotalStock() + "]";
+	
+}
+
+// clase inventario complejidad 0(1)
+class inventario {
+	private String nombreTienda;
+	private HashMap<String, Producto> productos;
+	
+	public inventario(String nombreTienda) {this.nombreTienda = nombreTienda;
+	this.productos = new HashMap<>();
+	}
+	
+	public void agregarProducto (Producto producto) {
+		productos.put(producto.getCodigoProducto(), producto);
+	}
+	
+	public Producto buscarProductoPorCodigo(String codigoProducto) {return productos.get(codigoProducto);}
+	
+	}
+//buscar productos con lista
+	public List<Producto> buscarProdcuctoPorCodigo(List<String> codigos){
+	
 }
 
 public class Main {
