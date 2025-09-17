@@ -3,12 +3,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 
-// Complejidad 0(1)
+// complejidad de 0(1)
 enum Categoria {
 	PORTATIL, GAMING, AURICULARES, RATONES, TECLADOS
 }
 
-// Complejidad 0(1)
+// complejidad de 0(1)
 class Producto {
 	private String codigoProducto;
 	private String nombre;
@@ -22,6 +22,33 @@ class Producto {
 		this.precio = precio;
 		this.categoria = categoria;
 		this.stock = stock;
+	}
+
+//getters and setters complejidad de 0(1)
+public String getCodigoProducto() {return codigoProducto;}
+public void setCodigoProducto(String codigoProducto) {this.codigoProducto = codigoProducto;}
+
+public String getNombre() {return nombre;}
+public void setNombre(String nombre ) {this.nombre = nombre;}
+
+public double getPrecio() {return precio;}
+public void setPrecio(double precio) {this.precio = precio;}
+
+public Categoria getCategoria() {return categoria;}
+public void setCategoria(Categoria categoria) {this.categoria = categoria;}
+
+public int getStock() {return stock;}
+public int setStock(int stock) {this.stock = stock;}
+
+public double valortotalStock() {
+	return this.precio * this.stock;
+}
+
+@Override
+
+public String toString() {
+	if (stock == 0) {
+		
 	}
 }
 
