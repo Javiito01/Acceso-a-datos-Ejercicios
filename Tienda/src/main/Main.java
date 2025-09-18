@@ -1,85 +1,88 @@
 package main;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.ArrayList;
-
-// complejidad de 0(1)
-enum Categoria {
-	PORTATILES, GAMING, AURICULARES, RATONES, TECLADOS
-}
-
-// complejidad de 0(1)
-class Producto {
-	private String codigoProducto;
-	private String nombre;
-	private double precio;
-	private Categoria categoria;
-	private int stock;
-	
-	public Producto(String codigoProducto, String nombre, double precio, Categoria categoria, int stock) {
-		this.codigoProducto = codigoProducto;
-		this.nombre = nombre;
-		this.precio = precio;
-		this.categoria = categoria;
-		this.stock = stock;
-	}
-
-//getters and setters complejidad de 0(1)
-public String getCodigoProducto() {return codigoProducto;}
-public void setCodigoProducto(String codigoProducto) {this.codigoProducto = codigoProducto;}
-
-public String getNombre() {return nombre;}
-public void setNombre(String nombre ) {this.nombre = nombre;}
-
-public double getPrecio() {return precio;}
-public void setPrecio(double precio) {this.precio = precio;}
-
-public Categoria getCategoria() {return categoria;}
-public void setCategoria(Categoria categoria) {this.categoria = categoria;}
-
-public int getStock() {return stock;}
-public int setStock(int stock) {this.stock = stock;}
-
-public double valortotalStock() {
-	return this.precio * this.stock;
-}
-
-@Override
-
-public String toString() {
-	if (stock == 0) {
-		return nombre + "[Codigo:" + codigoProducto + ", Categoría: " + categoria + " ] No quedan unidades";
-	}
-	return nombre + "[Codigo: " + codigoProducto + ", Categoria: " + categoria + ", Stock:" + stock + ",Valor total de stock: " + valortotalStock() + "]";
-	
-}
-
-// clase inventario complejidad 0(1)
-class inventario {
-	private String nombreTienda;
-	private HashMap<String, Producto> productos;
-	
-	public inventario(String nombreTienda) {this.nombreTienda = nombreTienda;
-	this.productos = new HashMap<>();
-	}
-	
-	public void agregarProducto (Producto producto) {
-		productos.put(producto.getCodigoProducto(), producto);
-	}
-	
-	public Producto buscarProductoPorCodigo(String codigoProducto) {return productos.get(codigoProducto);}
-	
-	}
-//buscar productos con lista
-	public List<Producto> buscarProdcuctoPorCodigo(List<String> codigos){
-	
-}
+import java.util.Scanner;
+import categorias.Categoria;
+import categorias.Producto;
+import categorias.Inventario;
 
 public class Main {
+    public static void main(String[] args) {
+        Inventario inventario = new Inventario("Mi Tienda");
 
-	public static void main(String[] args) {
+        inventario.agregarProducto(new Producto("P1", "MacBook Pro", 2500.0, Categoria.PORTATILES, 5));
+        inventario.agregarProducto(new Producto("G1", "Alienware Aurora", 3000.0, Categoria.GAMING, 3));
+        inventario.agregarProducto(new Producto("A1", "Sony WH-1000XM4", 350.0, Categoria.AURICULARES, 10));
+        inventario.agregarProducto(new Producto("R1", "Logitech G502", 80.0, Categoria.RATONES, 15));
+        inventario.agregarProducto(new Producto("T1", "Corsair K70", 200.0, Categoria.TECLADOS, 7));
+        inventario.agregarProducto(new Producto("T2", "Razer BlackWidow", 180.0, Categoria.TECLADOS, 4));
+        inventario.agregarProducto(new Producto("A2", "Bose QC35", 300.0, Categoria.AURICULARES, 0)); // Sin stock
 
+        Scanner scanner = new Scanner(System.in);
+        boolean seguir = true;
 
-	}
+        System.out.println("Bienvenido al sistema de inventario.");
 
+        while (seguir) {
+            System.out.println("\nOpciones:");
+            System.out.println("1 - Consultar producto por código");
+            System.out.println("2 - Consultar productos por categoría");
+            System.out.println("3 - Mostrar inventario completo");
+            System.out.println("4 - Salir");
+            System.out.print("Introduce tu opción: ");
+
+            int opcion = -1;
+            try {
+                opcion = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Por favor ingresa un número válido.");
+                continue;
+            }
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("Introduce el código del producto: ");
+                    String codigo = scanner.nextLine();
+                    Producto producto = inventario.buscarProducto(codigo);
+                    if (producto != null) {
+                        System.out.println(producto);
+                    } else {
+                        System.out.println("Producto no encontrado.");
+                    }
+                    break;
+                case 2:
+                    System.out.println("Categorías disponibles:");
+                    for (Categoria cat : Categoria.values()) {
+                        System.out.println("- " + cat);
+                    }
+                    System.out.print("Introduce la categoría a consultar: ");
+                    String catStr = scanner.nextLine().toUpperCase();
+                    try {
+                        Categoria categoria = Categoria.valueOf(catStr);
+                        List<Producto> productosCat = inventario.productosPorCategoria(categoria);
+                        if (productosCat.isEmpty()) {
+                            System.out.println("No hay productos en esa categoría.");
+                        } else {
+                            System.out.println("Productos en " + categoria + ":");
+                            for (Producto p : productosCat) {
+                                System.out.println(p);
+                            }
+                        }
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("categoría no válida.");
+                    }
+                    break;
+                case 3:
+                    System.out.println(inventario);
+                    break;
+                case 4:
+                    System.out.println("Chao");
+                    seguir = false;
+                    break;
+                default:
+                    System.out.println("Error, inténtalo de nuevo.");
+            }
+        }
+        scanner.close();
+    }
 }

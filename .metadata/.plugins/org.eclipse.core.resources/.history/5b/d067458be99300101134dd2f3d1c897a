@@ -1,0 +1,68 @@
+package main;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
+
+import categorias.Categoria;
+import categorias.Producto;
+import categorias.Inventario;
+
+public class Main {
+    public static void main(String[] args) {
+        Inventario inventario = new Inventario("Mi Tienda");
+
+        inventario.agregarProducto(new Producto("P1", "MacBook Pro", 2500.0, Categoria.PORTATILES, 5));
+        inventario.agregarProducto(new Producto("G1", "Alienware Aurora", 3000.0, Categoria.GAMING, 3));
+        inventario.agregarProducto(new Producto("A1", "Sony WH-1000XM4", 350.0, Categoria.AURICULARES, 10));
+        inventario.agregarProducto(new Producto("R1", "Logitech G502", 80.0, Categoria.RATONES, 15));
+        inventario.agregarProducto(new Producto("T1", "Corsair K70", 200.0, Categoria.TECLADOS, 7));
+        inventario.agregarProducto(new Producto("T2", "Razer BlackWidow", 180.0, Categoria.TECLADOS, 4));
+        inventario.agregarProducto(new Producto("A2", "Bose QC35", 300.0, Categoria.AURICULARES, 0)); // Sin stock
+
+        Producto duplicado = new Producto("P1", "MacBook Air", 1500.0, Categoria.PORTATILES, 3);
+        if (inventario.buscarProducto(duplicado.getCodigoProducto()) == null) {
+            inventario.agregarProducto(duplicado);
+            System.out.println("Producto agregado: " + duplicado.getNombre());
+        } else {
+            System.out.println("Error: Producto con código " + duplicado.getCodigoProducto() + " ya existe.");
+        }
+
+        Producto busqueda = inventario.buscarProducto("X1");
+        if (busqueda != null) {
+            System.out.println(busqueda);
+        } else {
+            System.out.println("Producto con código X1 no encontrado.");
+        }
+
+        boolean stockOK = inventario.actualizarStock("G1", 5);
+        System.out.println(stockOK ? "Stock actualizado." : "Error al actualizar stock.");
+
+        inventario.actualizarStock("Z9", 5);
+
+        boolean ventaOK = inventario.venderProducto("R1", 5);
+        System.out.println(ventaOK ? "Venta realizada." : "Error en venta.");
+
+        ventaOK = inventario.venderProducto("T1", 10);
+        System.out.println(ventaOK ? "Venta realizada." : "Error en venta, no hay suficiente stock.");
+
+        List<Producto> portatiles = inventario.productosPorCategoria(Categoria.PORTATILES);
+        System.out.println("Productos en categoría PORTATILES:");
+        for (Producto p : portatiles) {
+            System.out.println(p);
+        }
+
+        try {
+            Categoria falsa = Categoria.valueOf("TELEVISORES");
+            List<Producto> falsos = inventario.productosPorCategoria(falsa);
+            System.out.println("Productos en categoría TELEVISORE:");
+            for (Producto p : falsos) System.out.println(p);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Categoría TELEVISORES no existe.");
+        }
+
+        System.out.println("\n--- Inventario completo ---");
+        System.out.println(inventario.toString());
+    }
+}
