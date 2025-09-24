@@ -1,54 +1,36 @@
 package categorias;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-// hashmap<string prodructo>inventario = new hashmap<string producto>();
+
 public class Inventario {
     private String nombreTienda;
-    private HashMap<String, Producto> productos;
+    private HashMap<String, Producto> productosMap; //búsqueda rápida: O(1)
+    private List<Producto> productosList;           //recorrido completo: O(n)
 
-    // complejidad: O(1)
+    //constructor: O(1)
     public Inventario(String nombreTienda) {
         this.nombreTienda = nombreTienda;
-        this.productos = new HashMap<>(); //declaro así el hashmap porque el inventario está vacio
+        this.productosMap = new HashMap<>();
+        this.productosList = new ArrayList<>();
     }
 
-    // complejidad: O(1)
-    public void agregarProducto(Producto producto) { 
-        productos.put(producto.getCodigoProducto(), producto);
+    //agregar producto: O(1) para HashMap y ArrayList
+    public void agregarProducto(Producto producto) {
+        productosMap.put(producto.getCodigoProducto(), producto);
+        productosList.add(producto);
     }
 
-    // complejidad: O(1)
-    public boolean actualizarStock(String codigoProducto, int cantidad) {
-        Producto producto = productos.get(codigoProducto);
-        if (producto == null) {
-            System.out.println("Error: Producto con código " + codigoProducto + " no existe.");
-            return false;
-        }
-        int nuevoStock = producto.getStock() + cantidad;
-        if (nuevoStock < 0) {
-            System.out.println("Error: No suficiente stock para vender " + (-cantidad) + " unidades del producto " + producto.getNombre());
-            return false;
-        }
-        producto.setStock(nuevoStock);
-        return true;
+    //buscar producto por código: O(1)
+    public Producto buscarProducto(String codigo) {
+        return productosMap.get(codigo);
     }
 
-    // complejidad: O(1)
-    public boolean venderProducto(String codigoProducto, int cantidad) {
-        return actualizarStock(codigoProducto, -cantidad);
-    }
-
-    // complejidad: O(1)
-    public Producto buscarProducto(String codigoProducto) {
-        return productos.get(codigoProducto);
-    }
-
-    // complejidad: O(n)
+    //obtener productos por categoría: O(n)
     public List<Producto> productosPorCategoria(Categoria categoria) {
         List<Producto> resultado = new ArrayList<>();
-        for (Producto p : productos.values()) {
+        for (Producto p : productosList) { // recorrido completo
             if (p.getCategoria() == categoria) {
                 resultado.add(p);
             }
@@ -56,31 +38,29 @@ public class Inventario {
         return resultado;
     }
 
-    // complejidad: O(n)
-    public double precioTotalInventario() {
-        double total = 0;
-        for (Producto p : productos.values()) {
-            total += p.valorTotalStock();
+    //agregar stock de un producto (ap): O(1)
+    public void ap(String cod, int c) {
+        Producto p = buscarProducto(cod); // O(1)
+        if (p != null) {
+            int nuevoStock = p.getStock() + c;
+            if (nuevoStock < 0) {
+                System.out.println("no hay suficiente stock");
+            } else {
+                p.setStock(nuevoStock);
+                System.out.println("stock actualizado: " + p);
+            }
+        } else {
+            System.out.println("producto no encontrado.");
         }
-        return total;
     }
 
-    // complejidad: O(1)
-    public int tamañoInventario() {
-        return productos.size();
-    }
-
-    // complejidad: O(n)
+    //mostrar inventario completo: O(n)
     @Override
     public String toString() {
-        String info = "Inventario tienda: " + nombreTienda + "\n" +
-                      "Productos:\n";
-        for (Producto p : productos.values()) {
-            info += p.toString() + "\n";
+        StringBuilder sb = new StringBuilder("Inventario de " + nombreTienda + ":\n");
+        for (Producto p : productosList) { //recorrido completo
+            sb.append(p).append("\n");
         }
-        info += "Cantidad total de productos distintos: " + tamañoInventario() + "\n";
-        info += "Valor total del inventario: " + precioTotalInventario() + "\n";
-        return info;
+        return sb.toString();
     }
 }
-

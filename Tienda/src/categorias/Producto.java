@@ -39,8 +39,8 @@ public class Producto {
  @Override
  public String toString() {
      if (stock <= 0) {
-         return nombre + " (Código: " + codigoProducto + ", Categoría: " + categoria + ") - Sin stock";
+         return nombre + " (código: " + codigoProducto + ", categoría: " + categoria + ") - sin stock";
      }
-     return nombre + " (Código: " + codigoProducto + ", Precio: " + precio + ", Categoría: " + categoria + ", Stock: " + stock + ")";
+     return nombre + " (código: " + codigoProducto + ", precio: " + precio + ", categoría: " + categoria + ", stock: " + stock + ")";
  }
 }

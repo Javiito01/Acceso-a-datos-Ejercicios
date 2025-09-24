@@ -8,8 +8,9 @@ import categorias.Inventario;
 
 public class Main {
     public static void main(String[] args) {
-        Inventario inventario = new Inventario("Mi Tienda");
+        Inventario inventario = new Inventario("mi tienda");
 
+        //agregar productos
         inventario.agregarProducto(new Producto("P1", "MacBook Pro", 2500.0, Categoria.PORTATILES, 5));
         inventario.agregarProducto(new Producto("G1", "Alienware Aurora", 3000.0, Categoria.GAMING, 3));
         inventario.agregarProducto(new Producto("A1", "Sony WH-1000XM4", 350.0, Categoria.AURICULARES, 10));
@@ -21,66 +22,78 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         boolean seguir = true;
 
-        System.out.println("Bienvenido al sistema de inventario.");
+        System.out.println("bienvenido al inventario de la tienda.");
 
         while (seguir) {
-            System.out.println("\nOpciones:");
-            System.out.println("1 - Consultar producto por código");
-            System.out.println("2 - Consultar productos por categoría");
-            System.out.println("3 - Mostrar inventario completo");
-            System.out.println("4 - Salir");
-            System.out.print("Introduce tu opción: ");
+            System.out.println("\nopciones:");
+            System.out.println("1 - consultar producto por código");
+            System.out.println("2 - consultar productos por categoría");
+            System.out.println("3 - mostrar inventario completo");
+            System.out.println("4 - agregar o elminar stock de un producto");
+            System.out.println("5 - salir");
+            System.out.print("escribe tu opción: ");
 
             int opcion = -1;
             try {
                 opcion = Integer.parseInt(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Por favor ingresa un número válido.");
+                System.out.println("error.");
                 continue;
             }
 
             switch (opcion) {
                 case 1:
-                    System.out.print("Introduce el código del producto: ");
+                    System.out.print("escribe el código del producto: ");
                     String codigo = scanner.nextLine();
-                    Producto producto = inventario.buscarProducto(codigo);
+                    Producto producto = inventario.buscarProducto(codigo); // O(1)
                     if (producto != null) {
                         System.out.println(producto);
                     } else {
-                        System.out.println("Producto no encontrado.");
+                        System.out.println("producto no encontrado.");
                     }
                     break;
                 case 2:
-                    System.out.println("Categorías disponibles:");
+                    System.out.println("categorías disponibles:");
                     for (Categoria cat : Categoria.values()) {
                         System.out.println("- " + cat);
                     }
-                    System.out.print("Introduce la categoría a consultar: ");
+                    System.out.print("escribe la categoría a consultar: ");
                     String catStr = scanner.nextLine().toUpperCase();
                     try {
                         Categoria categoria = Categoria.valueOf(catStr);
-                        List<Producto> productosCat = inventario.productosPorCategoria(categoria);
+                        List<Producto> productosCat = inventario.productosPorCategoria(categoria); // O(n)
                         if (productosCat.isEmpty()) {
-                            System.out.println("No hay productos en esa categoría.");
+                            System.out.println("no hay productos en esa categoría.");
                         } else {
-                            System.out.println("Productos en " + categoria + ":");
+                            System.out.println("productos en " + categoria + ":");
                             for (Producto p : productosCat) {
                                 System.out.println(p);
                             }
                         }
                     } catch (IllegalArgumentException e) {
-                        System.out.println("categoría no válida.");
+                        System.out.println("error.");
                     }
                     break;
                 case 3:
-                    System.out.println(inventario);
+                    System.out.println(inventario); //O(n)
                     break;
                 case 4:
-                    System.out.println("Chao");
+                    System.out.print("escribe el código del producto: ");
+                    String cod = scanner.nextLine();
+                    System.out.print("escribe la suma o resta de stock (ej: -2 para vender, +5 para agregar): ");
+                    try {
+                        int c = Integer.parseInt(scanner.nextLine());
+                        inventario.ap(cod, c); //O(1)
+                    } catch (NumberFormatException e) {
+                        System.out.println("error.");
+                    }
+                    break;
+                case 5:
+                    System.out.println("adios");
                     seguir = false;
                     break;
                 default:
-                    System.out.println("Error, inténtalo de nuevo.");
+                    System.out.println("error.");
             }
         }
         scanner.close();
